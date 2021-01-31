@@ -162,8 +162,7 @@ MonoBehaviour:
     type: 3}
   WIDTH: 40
   HEIGHT: 20
-  nVehicles: 10
-  stop: 0
+  nVehicles: 15
 --- !u!4 &642446459
 Transform:
   m_ObjectHideFlags: 0

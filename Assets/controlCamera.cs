@@ -34,8 +34,8 @@ public class controlCamera : MonoBehaviour
 
         angle %= (Mathf.PI * 2f);
 
-        transform.localPosition = new Vector3(0 + R * Mathf.Sin(angle), R, 0 + R * Mathf.Cos(angle));
-        //transform.localPosition = new Vector3(0,R,0);
+        //transform.localPosition = new Vector3(0 + R * Mathf.Sin(angle), R, 0 + R * Mathf.Cos(angle));
+        transform.localPosition = new Vector3(0,R,0);
 
         transform.LookAt(Vector3.zero);
 

@@ -116,8 +116,6 @@ public class worldScript : MonoBehaviour
                     busy = true;
             }
 
-            //setStateTile(x, y, false);
-
             GameObject newVehicle = (GameObject)Instantiate(vehiclePrefab, new Vector3((x - (WIDTH / 2)) * 2, 1.5f, ((y - (HEIGHT / 2)) * -1) * 2), Quaternion.identity);
 
             newVehicle.GetComponent<MeshRenderer>().material.color = vehicleColors[Random.Range(0, vehicleColors.Length)];
@@ -411,12 +409,6 @@ public class worldScript : MonoBehaviour
 
     }
 
-    /*
-    public void setStateTile(int x, int y, bool free)
-    {
-        worldTable[x, y].tStates = tileStates.FREE;
-    }
-    */
 
     void resetWorld()
     {
@@ -457,9 +449,6 @@ public class worldScript : MonoBehaviour
                     if (worldTable[i, j].neighborgs[3] == true)
                         kk += 8;
 
-                    //if (worldTable[i, j].free == false)
-                    //    writer.Write("1");
-                    //else
                     writer.Write(kk.ToString("X1"));
                 }
                 else

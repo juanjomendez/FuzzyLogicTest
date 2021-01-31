@@ -9,11 +9,10 @@ public class vehicleControl : MonoBehaviour
 
     public worldScript myWorldScript;
 
-    public int posX, posY, id;
+    int posX, posY, id, width, height;
+    int xTrailStart, yTrailStart, xTrailStop, yTrailStop;
 
     public directions myDirection, prevDirection;
-
-    int width, height;
 
     float tFactor, timeStopped;
 
@@ -21,8 +20,7 @@ public class vehicleControl : MonoBehaviour
     
     worldScript.tile currentTile;
 
-    int xTrailStart, yTrailStart, xTrailStop, yTrailStop;
-
+    
     public struct posAhead
     {
         public posAhead(int _x, int _y)
