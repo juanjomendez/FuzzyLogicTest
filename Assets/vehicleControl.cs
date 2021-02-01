@@ -9,7 +9,7 @@ public class vehicleControl : MonoBehaviour
 
     public worldScript myWorldScript;
 
-    int posX, posY, id, width, height;
+    int posX, posY, id, width, height, timeWhenStopped;
     int xTrailStart, yTrailStart, xTrailStop, yTrailStop;
 
     public directions myDirection, prevDirection;
@@ -20,7 +20,9 @@ public class vehicleControl : MonoBehaviour
     
     worldScript.tile currentTile;
 
-    
+    int THRESHOLD_STOP_TIME = 2;
+    int TIME_AFTER_STOP = 2000;
+
     public struct posAhead
     {
         public posAhead(int _x, int _y)
@@ -33,6 +35,7 @@ public class vehicleControl : MonoBehaviour
 
     List<posAhead> listOfPositionsAhead;
 
+    bool stopped;
     //List<GameObject> sphereTests;
 
 
@@ -41,6 +44,7 @@ public class vehicleControl : MonoBehaviour
     {
 
         timeStopped = 0;
+        stopped = false;
 
         listOfPositionsAhead = new List<posAhead>();
         listOfPositionsAhead.Clear();
@@ -401,7 +405,7 @@ public class vehicleControl : MonoBehaviour
                 tile t = myWorldScript.getTileXY(i, j);
                 if ((t.whichType == tileTypes.ROAD) && (t.whoIsInThisTile != id))
                 {
-                    if (//Always look on the right (side of life! )!!
+                    if (//Always look on the right (side of life)!!
                         ((d == directions.NORTH) && ((t.tStates == tileStates.WEST) || (t.tStates == tileStates.NORTH))) ||
                         ((d == directions.SOUTH) && ((t.tStates == tileStates.EAST) || (t.tStates == tileStates.SOUTH))) ||
                         ((d == directions.EAST) && ((t.tStates == tileStates.NORTH) || (t.tStates == tileStates.EAST))) ||
@@ -425,6 +429,52 @@ public class vehicleControl : MonoBehaviour
 
     }
 
+    bool shouldIStop(int x, int y, directions d)
+    {
+
+        int timeNow = (System.DateTime.Now.Hour * 3600000) + (System.DateTime.Now.Minute * 60000) + (System.DateTime.Now.Second * 1000) + (System.DateTime.Now.Millisecond);
+
+        if ((stopped == true) && ((timeNow - timeWhenStopped) < TIME_AFTER_STOP))
+            return false;
+        else
+        {
+
+            bool ret = false;
+            tile t;
+            switch (d)
+            {
+                case directions.NORTH:
+                    t = myWorldScript.getTileXY(x, y);
+                    if (t.whichRoadType == roadTypes.STOP_TOP_RIGHT)
+                        ret = true;
+                    break;
+
+                case directions.SOUTH:
+                    t = myWorldScript.getTileXY(x, y);
+                    if (t.whichRoadType == roadTypes.STOP_BOTTOM_LEFT)
+                        ret = true;
+                    break;
+
+                case directions.EAST:
+                    t = myWorldScript.getTileXY(x, y);
+                    if (t.whichRoadType == roadTypes.STOP_BOTTOM_RIGHT)
+                        ret = true;
+                    break;
+
+                case directions.WEST:
+                    t = myWorldScript.getTileXY(x, y);
+                    if (t.whichRoadType == roadTypes.STOP_TOP_LEFT)
+                        ret = true;
+                    break;
+
+            }
+
+            stopped = ret;
+
+            return ret;
+        }
+    }
+
 
     void Update()
     {
@@ -439,23 +489,39 @@ public class vehicleControl : MonoBehaviour
         else
             timeStopped += Time.deltaTime;
 
+        bool forceExit = false;
+        if (timeStopped > THRESHOLD_STOP_TIME)
+        {
+            forceExit = true;
+            timeWhenStopped = (System.DateTime.Now.Hour * 3600000) + (System.DateTime.Now.Minute * 60000) + (System.DateTime.Now.Second * 1000) + (System.DateTime.Now.Millisecond);
+        }
+
         //GetComponentInChildren<TextMesh>().text = timeStopped.ToString();
+        //if (forceExit == true)
+        //    timeStopped += 0f;
 
-        tFactor += increasePosition(posX, posY, myDirection, id);// 0.1f;
-
-        if (tFactor >= 1f)//arrives to the next tile
+        if ((shouldIStop(posX, posY, myDirection) == true) && (forceExit == false))
         {
 
-            deleteTrail();
+        }
+        else
+        {
+            tFactor += increasePosition(posX, posY, myDirection, id);// 0.1f;
 
-            tFactor = 0f;
+            if (tFactor >= 1f)//arrives to the next tile
+            {
 
-            currentPos = nextPos;
+                deleteTrail();
 
-            setNewDirection(myDirection);
+                tFactor = 0f;
 
-            markTrail();
+                currentPos = nextPos;
 
+                setNewDirection(myDirection);
+
+                markTrail();
+
+            }
         }
 
     }

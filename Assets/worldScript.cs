@@ -30,15 +30,16 @@ public class worldScript : MonoBehaviour
     };
 
 
-    public GameObject roadTile, buildingTile, crossTile, stopTile, vehiclePrefab;
+    public GameObject roadTile, buildingTile, crossTile, stopTile, vehiclePrefab, personPrefab;
 
     public tile[,] worldTable;
 
-    public int WIDTH, HEIGHT, nVehicles;
+    public int WIDTH, HEIGHT, nVehicles, nPeople;
 
     int minW, maxW, minH, maxH;
 
-    Color[] vehicleColors = { Color.red, Color.green, Color.blue, Color.yellow, Color.black, Color.white, Color.grey, Color.cyan };
+    Color[] vehicleColors = { Color.red, Color.green, Color.blue, Color.yellow, Color.cyan };
+    Color[] peopleColors = { Color.magenta, Color.black, Color.white, Color.grey };
 
 
 
@@ -61,6 +62,8 @@ public class worldScript : MonoBehaviour
         intantiateWorld();
 
         instantiateVehicles();
+
+        instantiatePeople();
 
         //showWorldText();
 
@@ -93,6 +96,39 @@ public class worldScript : MonoBehaviour
         }
 
         return isOK;
+
+    }
+
+
+    void instantiatePeople()
+    {
+
+        for (int i = 0; i < nPeople; i++)
+        {
+            bool busy = true;
+            int x, y;
+            x = 0;
+            y = 0;
+            while (busy == true)
+            {
+                x = Random.Range(0, WIDTH);
+                y = Random.Range(0, HEIGHT);
+                if (worldTable[x, y].whichType == tileTypes.BUILDING)// && (worldTable[x, y].tStates == tileStates.FREE) && (noOneCloseEnough(x, y) == true))
+                    busy = false;
+                else
+                    busy = true;
+            }
+
+            GameObject newPerson = (GameObject)Instantiate(personPrefab, new Vector3((x - (WIDTH / 2)) * 2, 1.5f, ((y - (HEIGHT / 2)) * -1) * 2), Quaternion.identity);
+
+            newPerson.GetComponent<MeshRenderer>().material.color = peopleColors[Random.Range(0, peopleColors.Length)];
+
+            newPerson.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+            newPerson.transform.SetParent(this.gameObject.transform);
+
+            newPerson.GetComponent<personControl>().init(this, x, y, WIDTH, HEIGHT, i);
+
+        }
 
     }
 

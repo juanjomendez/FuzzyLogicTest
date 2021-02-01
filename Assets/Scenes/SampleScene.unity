@@ -160,9 +160,12 @@ MonoBehaviour:
     type: 3}
   vehiclePrefab: {fileID: 7995086083697295319, guid: ad90f238ecd8d084ebe007622abef3f6,
     type: 3}
+  personPrefab: {fileID: 7995086083697295319, guid: ddfea4a783c43874593f97ba4373f1eb,
+    type: 3}
   WIDTH: 40
   HEIGHT: 20
-  nVehicles: 15
+  nVehicles: 10
+  nPeople: 10
 --- !u!4 &642446459
 Transform:
   m_ObjectHideFlags: 0
