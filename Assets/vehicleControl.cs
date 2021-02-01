@@ -8,20 +8,14 @@ public class vehicleControl : MonoBehaviour
     public enum directions { NORTH, SOUTH, EAST, WEST};
 
     public worldScript myWorldScript;
-
     int posX, posY, id, width, height, timeWhenStopped;
     int xTrailStart, yTrailStart, xTrailStop, yTrailStop;
-
     public directions myDirection, prevDirection;
-
     float tFactor, timeStopped;
-
     Vector3 currentPos, prevPos, nextPos;
-    
     worldScript.tile currentTile;
-
     int THRESHOLD_STOP_TIME = 2;
-    int TIME_AFTER_STOP = 2000;
+    int TIME_AFTER_STOP = 1000;
 
     public struct posAhead
     {
@@ -36,7 +30,6 @@ public class vehicleControl : MonoBehaviour
     List<posAhead> listOfPositionsAhead;
 
     bool stopped;
-    //List<GameObject> sphereTests;
 
 
 
@@ -49,10 +42,8 @@ public class vehicleControl : MonoBehaviour
         listOfPositionsAhead = new List<posAhead>();
         listOfPositionsAhead.Clear();
 
-        //sphereTests = new List<GameObject>();
-        //sphereTests.Clear();
-
     }
+
 
     directions getInitialDirection(tile currentTile, directions currentDirection)
     {
@@ -93,6 +84,7 @@ public class vehicleControl : MonoBehaviour
         return myDirection;
 
     }
+
 
     void setNewDirection(directions currentDirection)
     {
@@ -268,8 +260,6 @@ public class vehicleControl : MonoBehaviour
 
         currentTile = myWorldScript.getTileXY(posX, posY);
 
-        //myWorldScript.setStateTile(x, y, false);
-
         myDirection = getInitialDirection(currentTile, myDirection);
         prevDirection = myDirection;
 
@@ -306,6 +296,7 @@ public class vehicleControl : MonoBehaviour
 
     }
 
+
     void deleteTrail()
     {
 
@@ -318,11 +309,8 @@ public class vehicleControl : MonoBehaviour
 
         listOfPositionsAhead.Clear();
 
-        //for (int i=0;i<sphereTests.Count;i++)
-        //    GameObject.Destroy(sphereTests[i].gameObject);
-
-
     }
+
 
     void markTrail()
     {
@@ -339,20 +327,10 @@ public class vehicleControl : MonoBehaviour
                     myWorldScript.worldTable[i, j] = t;
 
                     listOfPositionsAhead.Add(new posAhead(i, j));
-                    ////////////////////////////////////////////////
-                    //GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    //sphere.transform.localPosition = new Vector3((i - (myWorldScript.WIDTH / 2)) * 2, 1.5f, ((j - (myWorldScript.HEIGHT / 2)) * -1) * 2);
-                    //sphere.GetComponent<MeshRenderer>().material.color = Color.white;
-                    //sphere.transform.localScale = new Vector3(1, 1, 1);
-                    //sphere.transform.SetParent(this.gameObject.transform);
-                    //sphereTests.Add(sphere);
-                    ////////////////////////////////////////////////
-
                 }
             }
         }
     }
-
 
 
     public float increasePosition(int x, int y, directions d, int id)
@@ -429,6 +407,7 @@ public class vehicleControl : MonoBehaviour
 
     }
 
+
     bool shouldIStop(int x, int y, directions d)
     {
 
@@ -440,30 +419,34 @@ public class vehicleControl : MonoBehaviour
         {
 
             bool ret = false;
-            tile t;
+            tile t, t2;
             switch (d)
             {
                 case directions.NORTH:
                     t = myWorldScript.getTileXY(x, y);
-                    if (t.whichRoadType == roadTypes.STOP_TOP_RIGHT)
+                    t2 = myWorldScript.getTileXY(x, y - 1);
+                    if ((t.whichRoadType == roadTypes.STOP_TOP_RIGHT) || (t2.tStates == tileStates.PERSON))
                         ret = true;
                     break;
 
                 case directions.SOUTH:
                     t = myWorldScript.getTileXY(x, y);
-                    if (t.whichRoadType == roadTypes.STOP_BOTTOM_LEFT)
+                    t2 = myWorldScript.getTileXY(x, y + 1);
+                    if ((t.whichRoadType == roadTypes.STOP_BOTTOM_LEFT) || (t2.tStates == tileStates.PERSON))
                         ret = true;
                     break;
 
                 case directions.EAST:
                     t = myWorldScript.getTileXY(x, y);
-                    if (t.whichRoadType == roadTypes.STOP_BOTTOM_RIGHT)
+                    t2 = myWorldScript.getTileXY(x + 1, y);
+                    if ((t.whichRoadType == roadTypes.STOP_BOTTOM_RIGHT) || (t2.tStates == tileStates.PERSON))
                         ret = true;
                     break;
 
                 case directions.WEST:
                     t = myWorldScript.getTileXY(x, y);
-                    if (t.whichRoadType == roadTypes.STOP_TOP_LEFT)
+                    t2 = myWorldScript.getTileXY(x - 1, y);
+                    if ((t.whichRoadType == roadTypes.STOP_TOP_LEFT) || (t2.tStates == tileStates.PERSON))
                         ret = true;
                     break;
 
@@ -473,6 +456,7 @@ public class vehicleControl : MonoBehaviour
 
             return ret;
         }
+
     }
 
 
@@ -496,10 +480,6 @@ public class vehicleControl : MonoBehaviour
             timeWhenStopped = (System.DateTime.Now.Hour * 3600000) + (System.DateTime.Now.Minute * 60000) + (System.DateTime.Now.Second * 1000) + (System.DateTime.Now.Millisecond);
         }
 
-        //GetComponentInChildren<TextMesh>().text = timeStopped.ToString();
-        //if (forceExit == true)
-        //    timeStopped += 0f;
-
         if ((shouldIStop(posX, posY, myDirection) == true) && (forceExit == false))
         {
 
@@ -520,8 +500,8 @@ public class vehicleControl : MonoBehaviour
                 setNewDirection(myDirection);
 
                 markTrail();
-
             }
+
         }
 
     }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using static worldScript;
 
 public class personControl : MonoBehaviour
@@ -15,6 +13,7 @@ public class personControl : MonoBehaviour
     worldScript.tile currentTile;
     public directions myDirection, prevDirection;
     Vector3 currentPos, prevPos, nextPos;
+
 
 
     void Start()
@@ -58,6 +57,7 @@ public class personControl : MonoBehaviour
 
     }
 
+
     public void init(worldScript _myWorldScript, int x, int y, int w, int h, int _i)
     {
 
@@ -70,8 +70,6 @@ public class personControl : MonoBehaviour
         id = _i;
 
         currentTile = myWorldScript.getTileXY(posX, posY);
-
-        //myWorldScript.setStateTile(x, y, false);
 
         myDirection = getInitialDirection(currentTile, posX, posY);
         prevDirection = myDirection;
@@ -102,13 +100,75 @@ public class personControl : MonoBehaviour
 
         currentPos = transform.localPosition;
         prevPos = currentPos;
+
     }
 
 
     float increasePosition(int x, int y, directions d, int id)
     {
 
-        return 0.025f + randomSpeed;
+        float ret = 0.025f + randomSpeed;
+        switch (d)
+        {
+            case directions.NORTH:
+                for (int k = -1;k < 3;k++)
+                {
+                    tile t1 = myWorldScript.getTileXY(x - k, y - 1);
+                    tile t2 = myWorldScript.getTileXY(x + k, y - 1);
+
+                    if (((t1.whichType == tileTypes.ROAD) && (t1.tStates == tileStates.EAST)) || ((t2.whichType == tileTypes.ROAD) && (t2.tStates == tileStates.WEST)))
+                    {
+                        ret = 0f;
+                        break;
+                    }
+                }
+            break;
+
+            case directions.SOUTH:
+                for (int k = -1; k < 3; k++)
+                {
+                    tile t1 = myWorldScript.getTileXY(x - k, y + 1);
+                    tile t2 = myWorldScript.getTileXY(x + k, y + 1);
+
+                    if (((t1.whichType == tileTypes.ROAD) && (t1.tStates == tileStates.EAST)) || ((t2.whichType == tileTypes.ROAD) && (t2.tStates == tileStates.WEST)))
+                    {
+                        ret = 0f;
+                        break;
+                    }
+                }
+            break;
+
+            case directions.EAST:
+                for (int k = -1; k < 3; k++)
+                {
+                    tile t1 = myWorldScript.getTileXY(x + 1, y - k);
+                    tile t2 = myWorldScript.getTileXY(x + 1, y + k);
+
+                    if (((t1.whichType == tileTypes.ROAD) && (t1.tStates == tileStates.SOUTH)) || ((t2.whichType == tileTypes.ROAD) && (t2.tStates == tileStates.NORTH)))
+                    {
+                        ret = 0f;
+                        break;
+                    }
+                }
+            break;
+
+            case directions.WEST:
+                for (int k = -1; k < 3; k++)
+                {
+                    tile t1 = myWorldScript.getTileXY(x - 1, y - k);
+                    tile t2 = myWorldScript.getTileXY(x - 1, y + k);
+
+                    if (((t1.whichType == tileTypes.ROAD) && (t1.tStates == tileStates.SOUTH)) || ((t2.whichType == tileTypes.ROAD) && (t2.tStates == tileStates.NORTH)))
+                    {
+                        ret = 0f;
+                        break;
+                    }
+                }
+            break;
+
+        }
+
+        return ret;// 0.025f + randomSpeed;
 
     }
 
@@ -249,7 +309,7 @@ public class personControl : MonoBehaviour
 
         transform.localPosition = Vector3.Lerp(currentPos, nextPos, tFactor);
 
-        tFactor += increasePosition(posX, posY, myDirection, id);// 0.1f;
+        tFactor += increasePosition(posX, posY, myDirection, id);
 
         if (tFactor >= 1f)//arrives to the next tile
         {
@@ -258,7 +318,11 @@ public class personControl : MonoBehaviour
 
             currentPos = nextPos;
 
+            myWorldScript.worldTable[posX, posY].tStates = tileStates.FREE;
+
             setNewDirection(myDirection);
+
+            myWorldScript.worldTable[posX, posY].tStates = tileStates.PERSON;
 
         }
 

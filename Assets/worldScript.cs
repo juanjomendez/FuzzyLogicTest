@@ -9,7 +9,7 @@ public class worldScript : MonoBehaviour
 
     public enum roadTypes { NORMAL, CROSS_VERTICAL, CROSS_HORIZONTAL, STOP_TOP_RIGHT, STOP_BOTTOM_RIGHT, STOP_BOTTOM_LEFT, STOP_TOP_LEFT }
 
-    public enum tileStates { NORTH, SOUTH, EAST, WEST, FREE };
+    public enum tileStates { NORTH, SOUTH, EAST, WEST, FREE, PERSON };
 
     public struct tile
     {
@@ -31,11 +31,8 @@ public class worldScript : MonoBehaviour
 
 
     public GameObject roadTile, buildingTile, crossTile, stopTile, vehiclePrefab, personPrefab;
-
     public tile[,] worldTable;
-
     public int WIDTH, HEIGHT, nVehicles, nPeople;
-
     int minW, maxW, minH, maxH;
 
     Color[] vehicleColors = { Color.red, Color.green, Color.blue, Color.yellow, Color.cyan };
@@ -100,6 +97,7 @@ public class worldScript : MonoBehaviour
     }
 
 
+    //Method to instantiate the people
     void instantiatePeople()
     {
 
@@ -113,7 +111,7 @@ public class worldScript : MonoBehaviour
             {
                 x = Random.Range(0, WIDTH);
                 y = Random.Range(0, HEIGHT);
-                if (worldTable[x, y].whichType == tileTypes.BUILDING)// && (worldTable[x, y].tStates == tileStates.FREE) && (noOneCloseEnough(x, y) == true))
+                if (worldTable[x, y].whichType == tileTypes.BUILDING)
                     busy = false;
                 else
                     busy = true;
@@ -133,6 +131,7 @@ public class worldScript : MonoBehaviour
     }
 
 
+    //Method to instantiate the vehicles
     void instantiateVehicles()
     {
 
@@ -215,7 +214,7 @@ public class worldScript : MonoBehaviour
             }
             if (horizontalLineFound == true)
                 ret = roadTypes.CROSS_HORIZONTAL;
-            else//check the possibility of putting a "stop"
+            else//check the possibility of placing a "stop"
             {
                 if ((y > 0) && (x < WIDTH - 1) && (worldTable[x, y].whichType == tileTypes.ROAD) && (worldTable[x+1, y].whichType == tileTypes.BUILDING) && 
                         (worldTable[x, y-1].whichType == tileTypes.ROAD) && (worldTable[x+1, y-1].whichType == tileTypes.ROAD))
@@ -242,6 +241,7 @@ public class worldScript : MonoBehaviour
     }
 
 
+    //Once the tile habe been generated, creates the world, by instantiating gameObjects (LAND, ROAD, STOPS or CROSS)
     void intantiateWorld()
     {
 
@@ -324,6 +324,7 @@ public class worldScript : MonoBehaviour
     }
 
 
+    //After creating the roads, fill up each tile with its neighbours (whether a cell has exit from North, South, East or West)
     void createTiles()
     {
 
@@ -386,6 +387,9 @@ public class worldScript : MonoBehaviour
     }
 
 
+    //Create some random roads...
+    //First draw some vertical ones with a random distance between them, 
+    //and then some horizontal ones...
     void createRoads()
     {
 
@@ -432,6 +436,7 @@ public class worldScript : MonoBehaviour
     }
 
 
+    //Returns a cell, giving its x and y coordinates
     public tile getTileXY(int x, int y)
     {
 
@@ -446,6 +451,7 @@ public class worldScript : MonoBehaviour
     }
 
 
+    //Make everything a building! NO roads yet...
     void resetWorld()
     {
 
@@ -461,7 +467,9 @@ public class worldScript : MonoBehaviour
 
     }
 
-
+    
+    //For testing purposes... 
+    //This funtion writes a file text to show each tile with its "neighbours" 0->North, 1->South, 2->West, 3->East
     void showWorldText()
     {
 
