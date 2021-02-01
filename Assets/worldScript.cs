@@ -35,8 +35,8 @@ public class worldScript : MonoBehaviour
     public int WIDTH, HEIGHT, nVehicles, nPeople;
     int minW, maxW, minH, maxH;
 
-    Color[] vehicleColors = { Color.red, Color.green, Color.blue, Color.yellow, Color.cyan };
-    Color[] peopleColors = { Color.magenta, Color.black, Color.white, Color.grey };
+    Color[] vehicleColors = { Color.red, Color.green, Color.blue, Color.yellow, Color.cyan, Color.magenta };
+    Color[] peopleColors = { Color.black, Color.white, Color.grey };
 
 
 

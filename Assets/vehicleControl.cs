@@ -425,28 +425,28 @@ public class vehicleControl : MonoBehaviour
                 case directions.NORTH:
                     t = myWorldScript.getTileXY(x, y);
                     t2 = myWorldScript.getTileXY(x, y - 1);
-                    if ((t.whichRoadType == roadTypes.STOP_TOP_RIGHT) || (t2.tStates == tileStates.PERSON))
+                    if ((t.whichRoadType == roadTypes.STOP_TOP_RIGHT) /*|| (t2.tStates == tileStates.PERSON)*/ || (t2.tStates != tileStates.FREE))
                         ret = true;
                     break;
 
                 case directions.SOUTH:
                     t = myWorldScript.getTileXY(x, y);
                     t2 = myWorldScript.getTileXY(x, y + 1);
-                    if ((t.whichRoadType == roadTypes.STOP_BOTTOM_LEFT) || (t2.tStates == tileStates.PERSON))
+                    if ((t.whichRoadType == roadTypes.STOP_BOTTOM_LEFT) /*|| (t2.tStates == tileStates.PERSON)*/ || (t2.tStates != tileStates.FREE))
                         ret = true;
                     break;
 
                 case directions.EAST:
                     t = myWorldScript.getTileXY(x, y);
                     t2 = myWorldScript.getTileXY(x + 1, y);
-                    if ((t.whichRoadType == roadTypes.STOP_BOTTOM_RIGHT) || (t2.tStates == tileStates.PERSON))
+                    if ((t.whichRoadType == roadTypes.STOP_BOTTOM_RIGHT) /*|| (t2.tStates == tileStates.PERSON)*/ || (t2.tStates != tileStates.FREE))
                         ret = true;
                     break;
 
                 case directions.WEST:
                     t = myWorldScript.getTileXY(x, y);
                     t2 = myWorldScript.getTileXY(x - 1, y);
-                    if ((t.whichRoadType == roadTypes.STOP_TOP_LEFT) || (t2.tStates == tileStates.PERSON))
+                    if ((t.whichRoadType == roadTypes.STOP_TOP_LEFT) /*|| (t2.tStates == tileStates.PERSON)*/ || (t2.tStates != tileStates.FREE))
                         ret = true;
                     break;
 
