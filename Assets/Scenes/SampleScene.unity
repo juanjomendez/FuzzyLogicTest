@@ -162,10 +162,10 @@ MonoBehaviour:
     type: 3}
   personPrefab: {fileID: 7995086083697295319, guid: ddfea4a783c43874593f97ba4373f1eb,
     type: 3}
-  WIDTH: 40
-  HEIGHT: 20
-  nVehicles: 10
-  nPeople: 10
+  WIDTH: 30
+  HEIGHT: 30
+  nVehicles: 20
+  nPeople: 40
 --- !u!4 &642446459
 Transform:
   m_ObjectHideFlags: 0
